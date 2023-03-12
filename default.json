@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "PPO",
+    "policy": "MlpPolicy",
+    "name": "PPO-MlpPolicy"
+  },
+  "training": {
+    "timesteps_per_epoch": 50000,
+    "epochs": 10
+  }
+}
