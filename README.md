@@ -5,6 +5,7 @@ Stable baselines documentation: https://stable-baselines3.readthedocs.io/en/mast
 
 To-Dos:
 - create agent based on ResNet
+- get it to run on datahub (sound problems)
 
 Requirements:
 
