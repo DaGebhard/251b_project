@@ -6,6 +6,9 @@ python test.py PPO MlpPolicy-0
 from stable_baselines3 import PPO
 import sys
 import time
+import os
+from environment_factory import get_environment
+import json
 
 
 if __name__ == "__main__":
@@ -16,10 +19,13 @@ if __name__ == "__main__":
         raise ValueError("Wrong arguments. Have to be of format type name")
 
     if agent_type == "PPO":
-        model = PPO.load("agents/" + agent_name)
+        model = PPO.load(os.path.join("agents", agent_name[:agent_name.rfind('-')], agent_name))
     else:
         raise ValueError("Unknown agent type.")
-    env = model.get_env()
+    config_name = os.path.join("agents", agent_name[:agent_name.rfind('-')], "config")
+    with open(config_name + ".json") as json_file:
+        config = json.load(json_file)
+    env = get_environment(config)
 
     obs = env.reset()
     input("Press Key to continue")
