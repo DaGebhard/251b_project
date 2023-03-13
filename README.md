@@ -5,3 +5,8 @@ Stable baselines documentation: https://stable-baselines3.readthedocs.io/en/mast
 
 To-Dos:
 - create agent based on ResNet
+
+Requirements:
+
+    pip install stable-baselines3[extra] 
+    pip install flappy-bird-gym
