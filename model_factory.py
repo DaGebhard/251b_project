@@ -1,7 +1,7 @@
 """
 This file implements the get_model function used in main.py
 """
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, DQN
 import os
 
 
@@ -56,9 +56,14 @@ def get_model(env, config, agent_name):
         number_of_previous_epochs += 1
         if type == "PPO":
             model = PPO.load(os.path.join("agents", agent_name), env)
+        elif type == "DQN":
+            model = DQN.load(os.path.join("agents", agent_name), env)
     else:
         number_of_previous_epochs = 0
         if type == "PPO":
             policy = config['model']['policy']
             model = PPO(policy, env)
+        elif type == "DQN":
+            policy = config['model']['policy']
+            model = DQN(policy, env, buffer_size=1000)
     return model, number_of_previous_epochs
