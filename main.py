@@ -42,6 +42,6 @@ if __name__ == "__main__":
     env = get_environment(config)
     model, number_of_previous_epochs = get_model(env, config, agent_name)
     for epoch in range(config['training']['epochs']):
-        model.learn(config['training']['timesteps_per_epoch'])
+        model.learn(config['training']['timesteps_per_epoch'],  progress_bar=True)
         model.save(os.path.join("agents",config['model']['name'], config['model']['name'] + "-{}".format(
             epoch + number_of_previous_epochs)))
