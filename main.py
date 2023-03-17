@@ -12,6 +12,11 @@ from model_factory import get_model
 from environment_factory import get_environment
 import argparse
 import shutil
+from stable_baselines3.common import results_plotter
+from stable_baselines3.common.results_plotter import plot_results
+from SaveOnBestTrainingRewardCallback import SaveOnBestTrainingRewardCallback
+import matplotlib.pyplot as plt
+from stable_baselines3.common.monitor import Monitor
 
 
 if __name__ == "__main__":
@@ -39,9 +44,19 @@ if __name__ == "__main__":
         os.mkdir(os.path.join("agents", config['model']['name']))
         shutil.copy2(config_name + ".json", os.path.join("agents", config['model']['name'], "config.json"))
 
+    log_dir = os.path.join("agents", config['model']['name'])
     env = get_environment(config)
+    env = Monitor(env, log_dir)
     model, number_of_previous_epochs = get_model(env, config, agent_name)
-    for epoch in range(config['training']['epochs']):
-        model.learn(config['training']['timesteps_per_epoch'],  progress_bar=True)
-        model.save(os.path.join("agents",config['model']['name'], config['model']['name'] + "-{}".format(
-            epoch + number_of_previous_epochs)))
+    if args.load is not None:
+        model.set_env(env)
+
+    callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
+    model.learn(total_timesteps=config['training']['timesteps_per_epoch'], callback=callback)
+    plot_results([log_dir], config['training']['timesteps_per_epoch'], results_plotter.X_TIMESTEPS, env)
+    plt.savefig(os.path.join(log_dir, "stats.png"))
+    plt.show()
+    # for epoch in range(config['training']['epochs']):
+    #     model.learn(config['training']['timesteps_per_epoch'],  progress_bar=True, reset_num_timesteps=False)
+    #     model.save(os.path.join("agents",config['model']['name'], config['model']['name'] + "-{}".format(
+    #         epoch + number_of_previous_epochs)))

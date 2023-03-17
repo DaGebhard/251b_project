@@ -65,5 +65,5 @@ def get_model(env, config, agent_name):
             model = PPO(policy, env)
         elif type == "DQN":
             policy = config['model']['policy']
-            model = DQN(policy, env, buffer_size=1000)
+            model = DQN(policy, env, buffer_size=1000, verbose=1)
     return model, number_of_previous_epochs
