@@ -1,11 +1,11 @@
 {
   "model": {
     "type": "PPO",
-    "policy": "MlpPolicy",
-    "name": "PPO-MlpPolicy"
+    "policy": "CnnPolicy",
+    "name": "PPO-CnnPolicy"
   },
   "training": {
-    "timesteps_per_epoch": 50000,
-    "epochs": 10
+    "timesteps_per_epoch": 1000000,
+    "epochs": 1
   }
 }

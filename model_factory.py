@@ -62,7 +62,7 @@ def get_model(env, config, agent_name):
         number_of_previous_epochs = 0
         if type == "PPO":
             policy = config['model']['policy']
-            model = PPO(policy, env)
+            model = PPO(policy, env, verbose=1, gamma=0.999)
         elif type == "DQN":
             policy = config['model']['policy']
             model = DQN(policy, env, buffer_size=1000, verbose=1, gamma=0.999)
