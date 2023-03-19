@@ -65,5 +65,6 @@ def get_model(env, config, agent_name):
             model = PPO(policy, env, verbose=1, gamma=0.999)
         elif type == "DQN":
             policy = config['model']['policy']
-            model = DQN(policy, env, buffer_size=10000, verbose=1, gamma=0.999, exploration_final_eps=0.005)
+            model = DQN(policy, env, buffer_size=10000, verbose=1, gamma=config['model']['gamma'], exploration_final_eps=config['model']
+                        ['exploration final epsilon'], , exploration_fraction=config['model']['exploration fraction'])
     return model, number_of_previous_epochs
