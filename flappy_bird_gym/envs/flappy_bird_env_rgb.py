@@ -77,6 +77,7 @@ class FlappyBirdEnvRGB(gym.Env):
                                             pipe_color=pipe_color,
                                             background=background)
         self.hit_multiplicator = hit_multiplicator
+        self.last_score = 0
 
     def _get_observation(self):
         self._renderer.draw_surface(show_score=False)
@@ -112,14 +113,10 @@ class FlappyBirdEnvRGB(gym.Env):
         alive = self._game.update_state(action)
         obs = self._get_observation()
 
-        reward = 1
+        reward = self._game.score - self.last_score
+        self.last_score = self._game.score
 
         done = not alive
-        if done:
-            if self._game.collision_upper_pipe is not None:
-                middle_of_gap = self._game.collision_upper_pipe['y'] + self._game.get_pipe_height() + self._game.get_pipe_gap_size() / 2
-                distance = abs(self._game.get_player_y() - middle_of_gap) / (self._game.get_pipe_gap_size() / 2)
-                reward += self.hit_multiplicator / max([1, distance])
         info = {"score": self._game.score}
 
         return obs, reward, done, info
