@@ -146,6 +146,7 @@ class FlappyBirdLogic:
         self.collision_upper_pipe = None
         self.collision_lower_pipe = None
         self.pipe_height = PIPE_HEIGHT
+        self.collision_ground = False
 
     class Actions(IntEnum):
         """ Possible actions for the player to take. """
@@ -178,6 +179,7 @@ class FlappyBirdLogic:
         """
         # if player crashes into ground
         if self.player_y + PLAYER_HEIGHT >= self.base_y - 1:
+            self.collision_ground = True
             return True
         else:
             player_rect = pygame.Rect(self.player_x, self.player_y,
