@@ -139,6 +139,15 @@ class FlappyBirdEnvSimple(gym.Env):
         obs = self._get_observation()
 
         reward = 1
+        
+        ###### Linear Reward Dependency ##########
+        if self._game.get_dist() > 0:
+            #Reward increases as linearly as the bird gets closer to the gap
+            reward += self_game.get_pip_sep() - self._game.get_dist()
+            
+        ######### Gaussian Dependency ############
+        #Can make the gaussian different shapes. May be nice
+        #reward += 100*np.exp(-(self._game.get_dist())**2)
 
         done = not alive
         info = {"score": self._game.score}

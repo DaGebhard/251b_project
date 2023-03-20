@@ -30,6 +30,7 @@ released under the MIT license.
 
 
 import random
+import numpy as np
 from enum import IntEnum
 from itertools import cycle
 from typing import Dict, Tuple, Union
@@ -55,6 +56,10 @@ PLAYER_HEIGHT = 24
 
 PIPE_WIDTH = 52
 PIPE_HEIGHT = 320
+
+### Assumed constant. Calculated from first two pipe ###
+PIPE_SEP = 144
+
 
 BASE_WIDTH = 336
 BASE_HEIGHT = 112
@@ -146,16 +151,39 @@ class FlappyBirdLogic:
         self.collision_upper_pipe = None
         self.collision_lower_pipe = None
         self.pipe_height = PIPE_HEIGHT
+        
+        ###### New variables for rewards. Added by Erik #####
+        self.x_dist = 0
+        self.y_dist = 0
+        self.dist = 0
+        #####################################################
 
     class Actions(IntEnum):
         """ Possible actions for the player to take. """
         IDLE, FLAP = 0, 1
+        
+    ##### Helper Functions Added By Erik ######
+    def get_pipe_width(self):
+        return PIPE_WIDTH
+    
+    def get_pipe_sep(self):
+        return PIPE_SEP
+    
+    def get_dist(self):
+        return self.dist
+
+    def get_player_y(self):
+        return self.player_y + PLAYER_HEIGHT / 2
+    
+    def get_player_x(self):
+        return self.player_x + PLAYER_WIDTH / 2
+    ###########################################
 
     def get_pipe_gap_size(self):
         return self._pipe_gap_size
 
-    def get_player_y(self):
-        return self.player_y
+    #def get_player_y(self):
+        #return self.player_y
 
     def get_pipe_height(self):
         return self.pipe_height
@@ -230,7 +258,15 @@ class FlappyBirdLogic:
             if pipe_mid_pos <= player_mid_pos < pipe_mid_pos + 4:
                 self.score += 1
                 self.sound_cache = "point"
-
+                
+            ############ Added by Erik Return x-distance from pipe #############
+            if 0<=(pipe_mid_pos - player_mid_pos)<PIPE_SEP: #Checks if the bird is between pipes
+                    self.x_dist = pipe_mid_pos - player_mid_pos
+                    self.y_dist = np.abs((self.player_y + PLAYER_HEIGHT / 2)-(pipe['y']+PIPE_HEIGHT)) #I think this is right?
+                    
+                    self.dist = np.sqrt(self.x_dist**2+self.y_dist**2) #Euclidean distance to center of gap
+            ####################################################################
+            
         # player_index base_x change
         if (self._loop_iter + 1) % 3 == 0:
             self.player_idx = next(self._player_idx_gen)
