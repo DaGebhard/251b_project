@@ -33,6 +33,8 @@ import pygame
 from flappy_bird_gym.envs.game_logic import FlappyBirdLogic
 from flappy_bird_gym.envs.renderer import FlappyBirdRenderer
 
+import matplotlib.pyplot as plt
+
 
 class FlappyBirdEnvRGB(gym.Env):
     """  Flappy Bird Gym environment that yields images as observations.
@@ -117,9 +119,19 @@ class FlappyBirdEnvRGB(gym.Env):
         done = not alive
         if done:
             if self._game.collision_upper_pipe is not None:
+                reward = []
                 middle_of_gap = self._game.collision_upper_pipe['y'] + self._game.get_pipe_height() + self._game.get_pipe_gap_size() / 2
-                distance = abs(self._game.get_player_y() - middle_of_gap) / (self._game.get_pipe_gap_size() / 2)
-                reward += self.hit_multiplicator / max([1, distance])
+                for y in range(int(middle_of_gap) - 500, int(middle_of_gap) + 500):
+                    distance = abs(y - middle_of_gap) / (self._game.get_pipe_gap_size() / 2)
+                    reward.append(self.hit_multiplicator / max([1, distance]))
+                print(reward)
+                plt.plot(range(-500, 500), reward)
+                plt.xlabel("distance from middle of gap")
+                plt.ylabel("Positional reward component")
+                plt.axvline(x=self._game.get_pipe_gap_size() / 2, color="black", linewidth=0.5, linestyle='-', alpha=0.5)
+                plt.axvline(x=-self._game.get_pipe_gap_size() / 2, color="black", linewidth=0.5, linestyle='-', alpha=0.5)
+                plt.savefig("C:/Users/danie/Desktop/251b_project/positional_reward_component.png")
+                exit()
         info = {"score": self._game.score}
 
         return obs, reward, done, info
