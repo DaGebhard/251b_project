@@ -120,16 +120,19 @@ class FlappyBirdEnvRGB(gym.Env):
         if done:
             if self._game.collision_upper_pipe is not None:
                 reward = []
+                plt.rcParams.update({'font.size': 22})
                 middle_of_gap = self._game.collision_upper_pipe['y'] + self._game.get_pipe_height() + self._game.get_pipe_gap_size() / 2
                 for y in range(int(middle_of_gap) - 500, int(middle_of_gap) + 500):
                     distance = abs(y - middle_of_gap) / (self._game.get_pipe_gap_size() / 2)
                     reward.append(self.hit_multiplicator / max([1, distance]))
                 print(reward)
+                fig, ax = plt.subplots(figsize=(8, 6))
                 plt.plot(range(-500, 500), reward)
                 plt.xlabel("distance from middle of gap")
                 plt.ylabel("Positional reward component")
                 plt.axvline(x=self._game.get_pipe_gap_size() / 2, color="black", linewidth=0.5, linestyle='-', alpha=0.5)
                 plt.axvline(x=-self._game.get_pipe_gap_size() / 2, color="black", linewidth=0.5, linestyle='-', alpha=0.5)
+                plt.tight_layout()
                 plt.savefig("C:/Users/danie/Desktop/251b_project/positional_reward_component.png")
                 exit()
         info = {"score": self._game.score}
